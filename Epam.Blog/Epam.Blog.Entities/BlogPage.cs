@@ -8,17 +8,14 @@ namespace Epam.Blog.Entities
 {
     public class BlogPage
     {
-        public BlogPage(int id, string title, string description)
+        public BlogPage(int iD, string title)
         {
-            Id = id;
+            ID = iD;
             Title = title;
-            Description = description;
         }
 
-        public int Id { get; }
+        public int ID { get; private set; }
 
         public string Title { get; private set; }
-
-        public string Description { get; private set; }
     }
 }

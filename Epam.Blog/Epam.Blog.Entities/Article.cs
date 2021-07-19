@@ -8,30 +8,33 @@ namespace Epam.Blog.Entities
 {
     public class Article
     {
-        public Article(int id, string title, string text, DateTime creationDate, IList<Tag> tags)
+        public Article(string title, string text, int id, DateTime creationDate)
         {
-            Id = id;
+            ID = id;
             Title = title;
             Text = text;
             CreationDate = creationDate;
-            Tags = tags;
+            Tags = new List<Tag>();
         }
 
-        public int Id { get; private set; }
+        public int ID { get; }
 
-        public string Title { get; private set; }
+        public string Title { get; set; }
 
-        public string Text { get; private set; }
+        public string Text { get; set; }
 
-        public DateTime CreationDate { get; private set; }
+        public virtual IList<Tag> Tags
+        { get; set; }
 
-        public IList<Tag> Tags { get; private set; }
+        public DateTime CreationDate { get; set; }
 
-        public void Edit(string newText, string newTitle, IList<Tag> newTags)
+        public void Edit(string newText, string newTitle)
         {
+            if (newText == null)
+                throw new ArgumentNullException("str", "Text string cannot be null!");
+
             Text = newText;
             Title = newTitle;
-            Tags = newTags;
         }
     }
 }

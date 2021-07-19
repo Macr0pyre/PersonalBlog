@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{75DD277D-DE1D-407E-9A49-0B5D4204E776}</ProjectGuid>
+    <ProjectGuid>{79BDB0CC-6A46-494F-BC5E-F3970C5920B8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Epam.Blog.BLL.Interfaces</RootNamespace>
@@ -41,7 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IArticlesLogic.cs" />
+    <Compile Include="IBlogPagesLogic.cs" />
+    <Compile Include="ITagsLogic.cs" />
+    <Compile Include="IUserLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Epam.Blog.Entities\Epam.Blog.Entities.csproj">
+      <Project>{513d863e-fde8-49f0-8bf2-eebe1668a525}</Project>
+      <Name>Epam.Blog.Entities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DC6F6740-A492-4AFF-B4D1-183BA788FC09}</ProjectGuid>
+    <ProjectGuid>{513D863E-FDE8-49F0-8BF2-EEBE1668A525}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Epam.Blog.Entities</RootNamespace>
