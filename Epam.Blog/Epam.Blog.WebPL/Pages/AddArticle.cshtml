@@ -1,15 +1,13 @@
 ﻿@using Epam.Blog.Entities;
 @using Epam.Blog.Dependencies;
 
-@{
-    Layout = "~/Pages/Layout/_BasicLayout.cshtml";
+@{ Layout = "~/Pages/Layout/_BasicLayout.cshtml";
 
-    var bll = DependencyResolver.GetInstance().ArticleLogic;
-    var bll2 = DependencyResolver.GetInstance().TagLogic;
+    var bllArticle = DependencyResolver.GetInstance().ArticleLogic;
+    var bllUser = DependencyResolver.GetInstance().UserLogic;
 
     string title = null;
     string text = null;
-    string tags = null;
 
     DateTime dateTime = DateTime.Now;
 
@@ -17,25 +15,51 @@
     {
         title = Request["title"];
         text = Request["text"];
-        tags = Request["tags"];
-        dateTime = DateTime.Now;
-        List<string> tagTuple = tags.Split(',').ToList<string>();
-        bll.AddFullArticleWithTags(title, text, dateTime, tagTuple);
 
-        Response.Redirect("~/index.cshtml");
-    }
-}
+        if (title.Length < 1 || text.Length < 1)
+        {
+            <div class="alert alert-warning" role="alert">
+                Title or text must contain at least 1 character!
+            </div>
+        }
+        else
+        {
+            dateTime = DateTime.Now;
+            BlogPage page = bllUser.GetUserByName(HttpContext.Current.User.Identity.Name).Page;
 
-<h2>Create new blog post</h2>
+            bllArticle.AddArticle(new Article(title, text, dateTime, page));
+
+            Response.Redirect("~/index.cshtml");
+        }
+    } }
+
+<h3>Let's make a post for your blog</h3>
 
 <form method="post">
-    <div class="form-group">
+    <div class="form-group" align="center">
         <label>Title</label>
-        <input type="text" name="title" style="" class="form-control" placeholder="The headline goes here..." value="@title" /><br />
-        <label>Tags</label>
-        <input type="text" name="tags" style="" class="form-control" placeholder="Separate each tag using a comma ','." value="@tags" /><br />
+        <input type="text" name="title" class="form-control" placeholder="This is your super special title" value="@title" /><br />
         <label>Text</label>
-        <textarea name="text" class="form-control" style="height: 300px;" placeholder="What would you like to write?" value="@text"></textarea><br />
+        <textarea name="text" class="form-control big" placeholder="Write something cool or stupid — just be free!" value="@text"></textarea><br />
+        <button type="submit" class="btn btn-warning">Post</button>
     </div>
-    <button type="submit" class="btn btn-primary">Post</button>
-</form>  
+</form>
+
+<style>
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        width: 500px;
+    }
+
+    .big {
+        height: 300px;
+    }
+
+    .alert-warning {
+        text-align: center;
+    }
+</style>

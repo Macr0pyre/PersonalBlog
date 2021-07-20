@@ -71,6 +71,34 @@ namespace Epam.Blog.SqlDAL
             }
         }
 
+        public User GetUserByPage(BlogPage page)
+        {
+            using (var _connection = new SqlConnection(_connectionString))
+            {
+                var query = $"SELECT * FROM Users WHERE PageID='{page.Id}'";
+
+                var command = new SqlCommand(query, _connection);
+
+                command.Parameters.AddWithValue("@PageID", page.Id);
+
+                _connection.Open();
+
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return new User(
+                        id: (int)reader["Id"],
+                        login: reader["Login"] as string,
+                        password: reader["PasswordHash"] as string,
+                        page: blogDAO.GetBlogPage((int)reader["PageID"]));
+                }
+                _connection.Close();
+
+                throw new InvalidOperationException("Cannot find User with BlogPage");
+            }
+        }
+
         public User GetUserByName(string login)
         {
             using (var _connection = new SqlConnection(_connectionString))
@@ -92,6 +120,8 @@ namespace Epam.Blog.SqlDAL
                         password: reader["PasswordHash"] as string,
                         page: blogDAO.GetBlogPage((int)reader["PageID"]));
                 }
+
+                _connection.Close();
 
                 return null;
             }

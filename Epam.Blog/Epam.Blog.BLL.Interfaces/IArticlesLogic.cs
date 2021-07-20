@@ -6,22 +6,16 @@ namespace Epam.Blog.BLL.Interfaces
 {
     public interface IArticlesLogic
     {
-        Article AddArticle(string title, string text, DateTime creationDate);
+        Article AddArticle(Article article);
 
-        IEnumerable<Article> GetArticles(bool orderedByCreationDate = true);
+        List<Article> GetArticlesByPage(BlogPage page);
+
+        List<Article> GetAllArticles();
 
         Article GetArticle(int id);
 
         void RemoveArticle(int id);
 
-        void EditArticle(int id, string newText, string newTitle);
-
-        int TotalArticles();
-
-        void FillTagMap(int articleId, int tagId);
-
-        int GetArticleIdByName(string name);
-
-        void AddFullArticleWithTags(string title, string text, DateTime creationDate, List<string> tags);
+        void EditArticle(int id, string newText, string newTitle, List<Tag> tags);
     }
 }

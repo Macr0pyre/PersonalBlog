@@ -44,5 +44,7 @@ namespace Epam.Blog.BLL
         {
             return _userDAO.SignIn(login, password);
         }
+
+        public User GetUserByPage(BlogPage page) => _userDAO.GetUserByPage(page);
     }
 }

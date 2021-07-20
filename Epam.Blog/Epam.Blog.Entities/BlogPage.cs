@@ -17,7 +17,5 @@ namespace Epam.Blog.Entities
         public int Id { get; private set; }
 
         public string Title { get; private set; }
-
-        public IList<Article> Articles { get; private set; }
     }
 }

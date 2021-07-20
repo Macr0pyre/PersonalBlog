@@ -59,7 +59,8 @@ namespace Epam.Blog.SqlDAL
 
                 if (reader.Read())
                 {
-                    return new BlogPage(title: reader["Name"] as string);
+                    return new BlogPage(id: (int)reader["Id"],
+                        title: reader["Name"] as string);
                 }
                 _connection.Close();
 

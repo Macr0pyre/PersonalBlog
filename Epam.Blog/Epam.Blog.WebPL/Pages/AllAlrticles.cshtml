@@ -1,0 +1,43 @@
+﻿@using Epam.Blog.Entities;
+@using Epam.Blog.Dependencies;
+@{
+    Layout = "~/Pages/Layout/_BasicLayout.cshtml";
+    var bllArticle = DependencyResolver.GetInstance().ArticleLogic;
+    var bllUser = DependencyResolver.GetInstance().UserLogic;
+}
+
+<DOCTYPE html>
+<html>
+<head>
+    <style>
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <h1 class="title">Here are all users posts</h1>
+                @{
+                    List<Article> articles = bllArticle.GetAllArticles();
+
+                    foreach (var item in articles)
+                    {
+                        <div class="post-preview">
+                            <h2 class="post-title">@item.Title</h2>
+                            <h4 class="post-subtitle">@item.Text</h4>
+                            <p class="post-meta">
+                                Posted by @bllUser.GetUserByPage(item.Page).Login
+                                on @item.CreationDate
+                            </p>
+                        </div> }
+                }
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
+

@@ -15,25 +15,25 @@ namespace Epam.Blog.BLL
             _articlesDAO = articlesDao;
         }
 
-        public Article AddArticle(string title, string text, DateTime creationDate) =>
-            _articlesDAO.AddArticle(title, text, creationDate);
+        public Article AddArticle(Article article) => _articlesDAO.AddArticle(article);
 
-        public void RemoveArticle(int id) =>
-            _articlesDAO.RemoveArticle(id);
+        public void EditArticle(int id, string newText, string newTitle, List<Tag> tags)
+        {
+            throw new NotImplementedException();
+        }
 
-        public void EditArticle(int id, string newTitle, string newText) =>
-            _articlesDAO.EditArticle(id, newTitle, newText);
+        public List<Article> GetAllArticles() => _articlesDAO.GetAllArticles();
 
-        public Article GetArticle(int id) => _articlesDAO.GetArticle(id);
+        public Article GetArticle(int id)
+        {
+            throw new NotImplementedException();
+        }
 
-        public IEnumerable<Article> GetArticles(bool orderedByCreationDate = true) => _articlesDAO.GetArticles(orderedByCreationDate);
+        public List<Article> GetArticlesByPage(BlogPage page) => _articlesDAO.GetArticlesByPage(page);
 
-        public int TotalArticles() => _articlesDAO.TotalArticles();
-
-        public void FillTagMap(int articleId, int tagId) => _articlesDAO.FillTagMap(articleId, tagId);
-
-        public int GetArticleIdByName(string name) => _articlesDAO.GetArticleIdByName(name);
-
-        public void AddFullArticleWithTags(string title, string text, DateTime creationDate, List<string> tags) => _articlesDAO.AddFullArticleWithTags(title, text, creationDate, tags);
+        public void RemoveArticle(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

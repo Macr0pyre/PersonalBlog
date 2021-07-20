@@ -16,6 +16,8 @@ namespace Epam.Blog.BLL.Interfaces
 
         User GetUserByName(string login);
 
+        User GetUserByPage(BlogPage page);
+
         void EditUser(int id, string newName);
 
         bool SignIn(string login, string password);

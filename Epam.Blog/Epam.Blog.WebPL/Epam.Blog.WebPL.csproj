@@ -116,7 +116,6 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Pages\SignOut.cshtml" />
     <Content Include="Pages\Registration.cshtml" />
     <Content Include="Pages\SignIn.cshtml" />
     <Content Include="Pages\ErrorPage.cshtml" />
@@ -124,7 +123,7 @@
     <Content Include="Pages\EditArticle.cshtml" />
     <Content Include="Pages\DeleteArticle.cshtml" />
     <Content Include="Pages\AdminPage.cshtml" />
-    <Content Include="Pages\CheckLogin.cshtml" />
+    <Content Include="Pages\AllAlrticles.cshtml" />
     <None Include="Scripts\jquery-3.6.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.6.0.js" />
     <Content Include="Scripts\jquery-3.6.0.min.js" />

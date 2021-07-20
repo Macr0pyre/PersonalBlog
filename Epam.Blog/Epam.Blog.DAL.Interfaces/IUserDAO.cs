@@ -13,6 +13,8 @@ namespace Epam.Blog.DAL.Interfaces
 
         User GetUserByName(string login);
 
+        User GetUserByPage(BlogPage page);
+
         void EditUser(int id, string newLogin);
 
         bool SignIn(string login, string password);
