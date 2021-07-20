@@ -11,27 +11,35 @@ namespace Epam.Blog.SqlDAL
 {
     public class UserSqlDAO : IUserDAO
     {
+        IBlogPageDAO blogDAO = new BlogPagesSqlDAO();
 
         public string _connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
         public User AddUser(User user)
         {
             using (var _connection = new SqlConnection(_connectionString))
             {
-                var query = "INSERT INTO dbo.Users(Login, PasswordHash)" +
-                    "VALUES(@Login, @PasswordHash)";
+                var query = "INSERT INTO dbo.Users(Login, PasswordHash, PageID)" +
+                    "VALUES(@Login, @PasswordHash, @PageID); SELECT CAST(scope_identity() AS INT) AS ID";
                 var command = new SqlCommand(query, _connection);
 
                 command.Parameters.AddWithValue("@Login", user.Login);
                 command.Parameters.AddWithValue("@PasswordHash", Hash(user.PasswordHash));
+                command.Parameters.AddWithValue("@PageID", user.Page.Id);
 
                 _connection.Open();
-                command.ExecuteNonQuery();
+
+                var result = command.ExecuteScalar();
 
                 new RoleManager().AddUserToRole(user.Login, "users");
-                return new User(
-                        id: user.Id,
+
+                if (result != null)
+                    return new User(
+                        id: (int)result,
                         login: user.Login,
-                        password: user.PasswordHash);
+                        password: user.PasswordHash,
+                        page: user.Page);
+
+                throw new InvalidOperationException("Cannot add User");
             }
         }
 
@@ -39,9 +47,9 @@ namespace Epam.Blog.SqlDAL
         {
             using (var _connection = new SqlConnection(_connectionString))
             {
-                var stProc = "Users_GetUserById";
+                var query = "SELECT * FROM Users " + $"WHERE ID='{id}'";
 
-                var command = new SqlCommand(stProc, _connection);
+                var command = new SqlCommand(query, _connection);
 
                 command.Parameters.AddWithValue("@id", id);
 
@@ -54,7 +62,8 @@ namespace Epam.Blog.SqlDAL
                     return new User(
                         id: (int)reader["Id"],
                         login: reader["Login"] as string,
-                        password: reader["PasswordHash"] as string);
+                        password: reader["PasswordHash"] as string,
+                        page: blogDAO.GetBlogPage((int)reader["PageID"]));
                 }
                 _connection.Close();
 
@@ -80,7 +89,8 @@ namespace Epam.Blog.SqlDAL
                     return new User(
                         id: (int)reader["Id"],
                         login: reader["Login"] as string,
-                        password: reader["PasswordHash"] as string);
+                        password: reader["PasswordHash"] as string,
+                        page: blogDAO.GetBlogPage((int)reader["PageID"]));
                 }
 
                 return null;

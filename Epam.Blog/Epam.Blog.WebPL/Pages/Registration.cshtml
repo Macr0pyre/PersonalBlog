@@ -4,10 +4,12 @@
 
 @{ Layout = "~/Pages/Layout/_BasicLayout.cshtml";
 
-    var bll = DependencyResolver.GetInstance().UserLogic;
+    var bllUser = DependencyResolver.GetInstance().UserLogic;
+    var bllPage = DependencyResolver.GetInstance().PageLogic;
 
     string login = null;
     string password = null;
+    string blogName = null;
 
     string pattern = @"^[a-zA-Z0-9]+$";
     Regex rgx = new Regex(pattern);
@@ -16,7 +18,9 @@
     {
         login = Request["login"];
         password = Request["password"];
-        if (bll.GetUserByName(login) != null)
+        blogName = Request["blogName"];
+
+        if (bllUser.GetUserByName(login) != null)
         {
 <div class="alert alert-warning" role="alert">
     User with this login already exists! Please, choose another login.
@@ -35,9 +39,15 @@ else if (password.Length < 4)
 <div class="alert alert-warning" role="alert">
     Your password must contain at least 4 characters!
 </div> }
+else if (blogName.Length < 1)
+{
+<div class="alert alert-warning" role="alert">
+    Your blog name must contain at least 1 character!
+</div> }
 else
 {
-bll.AddUser(new User(login, password));
+        BlogPage page = bllPage.AddBlogPage(new BlogPage(blogName));
+bllUser.AddUser(new User(login, password, page));
 Response.Redirect("~/index.cshtml");
 }
 } }
@@ -54,12 +64,22 @@ Response.Redirect("~/index.cshtml");
                     <p class="help-block">Username (login) must contain 2-20 latin letters or numbers, without spaces</p>
                 </div>
             </div>
+
             <div class="control-group">
                 <!-- Password-->
                 <label class="control-label" for="password">Password</label>
                 <div class="controls">
                     <input type="password" id="password" name="password" placeholder="" value="@password" class="form-control">
                     <p class="help-block">Password should be at least 4 characters</p>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <!-- Blog name-->
+                <label class="control-label" for="password">Blog name</label>
+                <div class="controls">
+                    <input type="text" id="blogName" name="blogName" placeholder="" value="@blogName" class="form-control">
+                    <p class="help-block">Name of your blog should be at least 1 character</p>
                 </div>
             </div>
 

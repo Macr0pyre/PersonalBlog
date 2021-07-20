@@ -16,8 +16,7 @@ namespace Epam.Blog.BLL
         }
         public User AddUser(User user)
         {
-            _userDAO.AddUser(user);
-            return user;
+            return _userDAO.AddUser(user);
         }
 
         public void RemoveUser(int id)

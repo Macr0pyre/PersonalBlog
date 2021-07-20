@@ -35,6 +35,6 @@ namespace Epam.Blog.Dependencies
 
         public IBlogPageDAO PageDAO => new BlogPagesSqlDAO();
 
-        public IBlogPagesLogic PageLogic => new BlogPagesLogic();
+        public IBlogPagesLogic PageLogic => new BlogPagesLogic(PageDAO);
     }
 }

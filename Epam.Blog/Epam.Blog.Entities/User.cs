@@ -8,18 +8,21 @@ namespace Epam.Blog.Entities
 {
     public class User
     {
-        public User(string login, string password, int id = -1)
+        public User(string login, string password, BlogPage page, int id = -1)
         {
             Id = id;
             Login = login;
             PasswordHash = password;
+            Page = page;
         }
 
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
-        public string Login { get; set; }
+        public string Login { get; private set; }
 
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; private set; }
+
+        public BlogPage Page { get; private set; }
 
     }
 }

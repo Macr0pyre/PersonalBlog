@@ -5,7 +5,15 @@
 
 @{ 
     Layout = "~/Pages/Layout/_BasicLayout.cshtml";
-    string pageName = "Personal blog"; 
+    string pageName = "Personal blog";
+    var bllUser = DependencyResolver.GetInstance().UserLogic;
+
+    string pageTitle = "Your very personal blog";
+
+    if (User.Identity.IsAuthenticated)
+    {
+        pageTitle = bllUser.GetUserByName(HttpContext.Current.User.Identity.Name).Page.Title;
+    }
 }
 
 <!DOCTYPE html>
@@ -19,8 +27,7 @@
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div class="site-heading">
-                        <h1>Your very personal blog</h1>
-                        @*<span class="subheading">A Blog Theme by Start Bootstrap</span>*@
+                        <h1>@pageTitle</h1>
                     </div>
                 </div>
             </div>
@@ -31,35 +38,36 @@
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 @{ var bll = DependencyResolver.GetInstance().ArticleLogic;
-                                var bll2 = DependencyResolver.GetInstance().TagLogic;
+                    var bll2 = DependencyResolver.GetInstance().TagLogic;
 
 
-                    <ul>
+        <ul>
 
-                        @foreach (var article in bll.GetArticles(true))
-                        {
-            <li>
-                <h2 class="post-title">
-                    @article.Title
-                </h2>
-                <p class="post-subtitle">
-                    @article.Text
-                </p>
-                @article.CreationDate
+            @foreach (var article in bll.GetArticles(true))
+            {
+<li>
+    <h2 class="post-title">
+        @article.Title
+    </h2>
+    <p class="post-subtitle">
+        @article.Text
+    </p>
+    @article.CreationDate
 
-                @if (article.Tags.Count > 0)
+    @if (article.Tags.Count > 0)
 
-                {
-                    string combindedString = string.Join(" ", article.Tags);
+    {
+        string combindedString = string.Join(" ", article.Tags);
 <div>
     Tags:
     @combindedString;
 </div> }
-                else
-                {
+else
+{
 <span>No one tag</span>}
-            </li>}
-                    </ul> }
+</li>
+}
+        </ul> }
                 <!-- Post preview-->
                 <div class="post-preview">
                     <a href="post.html">
@@ -81,6 +89,10 @@
     <script src="js/scripts.js"></script>
 
     <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+
+
+    @*HttpContext.Current.User.Identity.Name*@
+
 
     @*@if (User.Identity.IsAuthenticated)
         {
