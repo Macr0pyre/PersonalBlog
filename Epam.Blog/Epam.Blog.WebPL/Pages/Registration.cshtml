@@ -1,59 +1,89 @@
 ﻿@using Epam.Blog.Entities;
 @using Epam.Blog.Dependencies;
+@using System.Text.RegularExpressions;
 
-@{
-    Layout = "~/Pages/Layout/_BasicLayout.cshtml";
+@{ Layout = "~/Pages/Layout/_BasicLayout.cshtml";
 
     var bll = DependencyResolver.GetInstance().UserLogic;
 
     string login = null;
     string password = null;
 
+    string pattern = @"^[a-zA-Z0-9]+$";
+    Regex rgx = new Regex(pattern);
+
     if (IsPost)
     {
         login = Request["login"];
         password = Request["password"];
-        bll.AddUser(new User(login, password));
-        Response.Redirect("~/index.cshtml");
-    }
+        if (bll.GetUserByName(login) != null)
+        {
+<div class="alert alert-warning" role="alert">
+    User with this login already exists! Please, choose another login.
+</div> }
+else if (login.Length < 2 || login.Length > 20)
+{ <div class="alert alert-warning" role="alert">
+    Your login must contain 2-20 characters!
+</div> }
+else if (!rgx.IsMatch(login))
+{
+<div class="alert alert-warning" role="alert">
+    Your login must contain latin letters or numbers, without spaces!
+</div> }
+else if (password.Length < 4)
+{
+<div class="alert alert-warning" role="alert">
+    Your password must contain at least 4 characters!
+</div> }
+else
+{
+bll.AddUser(new User(login, password));
+Response.Redirect("~/index.cshtml");
 }
+} }
 
 <form class="form-horizontal" align="center" action='' method="POST">
     <fieldset>
-        <div id="legend">
-            <label class="">Register</label>
-        </div>
-        <div class="control-group" align="center">
-            <!-- Username -->
-            <label class="control-label" for="login">Login</label>
-            <div class="controls">
-                <input type="text" id="login" name="login" placeholder="" value="@login" class="input-xlarge">
-                <p class="help-block">Username can contain any letters or numbers, without spaces</p>
+        <div align="center">
+            <h3>Create a blog</h3>
+            <div class="control-group">
+                <!-- Username -->
+                <label class="control-label" for="login">Login</label>
+                <div class="controls">
+                    <input type="text" id="login" name="login" placeholder="" value="@login" class="form-control">
+                    <p class="help-block">Username (login) must contain 2-20 latin letters or numbers, without spaces</p>
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <!-- Password-->
-            <label class="control-label" for="password">Password</label>
-            <div class="controls">
-                <input type="password" id="password" name="password" placeholder="" value="@password" class="input-xlarge">
-                <p class="help-block">Password should be at least 4 characters</p>
+            <div class="control-group">
+                <!-- Password-->
+                <label class="control-label" for="password">Password</label>
+                <div class="controls">
+                    <input type="password" id="password" name="password" placeholder="" value="@password" class="form-control">
+                    <p class="help-block">Password should be at least 4 characters</p>
+                </div>
             </div>
-        </div>
 
-        <div class="control-group">
-            <!-- Password -->
-            <label class="control-label" for="password_confirm">Password (Confirm)</label>
-            <div class="controls">
-                <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="input-xlarge">
-                <p class="help-block">Please confirm password</p>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <!-- Button -->
-            <div class="controls">
-                <button id="addUserBtn" class="btn btn-success">Register</button>
+            <div class="control-group">
+                <!-- Button -->
+                <div class="controls">
+                    <button id="addUserBtn" class="btn btn-warning">Create</button>
+                </div>
             </div>
         </div>
     </fieldset>
 </form>
+
+<style>
+    .form-control {
+        width: 300px;
+        text-align: center;
+    }
+
+    p {
+        color: gray;
+    }
+
+    .alert-warning {
+        text-align: center;
+    }
+</style>

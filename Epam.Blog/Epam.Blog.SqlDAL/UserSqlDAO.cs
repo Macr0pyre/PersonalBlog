@@ -17,13 +17,12 @@ namespace Epam.Blog.SqlDAL
         {
             using (var _connection = new SqlConnection(_connectionString))
             {
-                var query = "INSERT INTO dbo.Users(Login, PasswordHash, NormalizedLogin) " +
-                    "VALUES(@Login, @PasswordHash, @NormalizedLogin)";
+                var query = "INSERT INTO dbo.Users(Login, PasswordHash)" +
+                    "VALUES(@Login, @PasswordHash)";
                 var command = new SqlCommand(query, _connection);
 
                 command.Parameters.AddWithValue("@Login", user.Login);
                 command.Parameters.AddWithValue("@PasswordHash", Hash(user.PasswordHash));
-                command.Parameters.AddWithValue("@NormalizedLogin", user.Login.ToUpper());
 
                 _connection.Open();
                 command.ExecuteNonQuery();
@@ -60,6 +59,31 @@ namespace Epam.Blog.SqlDAL
                 _connection.Close();
 
                 throw new InvalidOperationException("Cannot find User with ID = " + id);
+            }
+        }
+
+        public User GetUserByName(string login)
+        {
+            using (var _connection = new SqlConnection(_connectionString))
+            {
+                var query = "SELECT * FROM Users " + $"WHERE Login='{login}'";
+                var command = new SqlCommand(query, _connection);
+
+                command.Parameters.AddWithValue("@Login", login);
+
+                _connection.Open();
+
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return new User(
+                        id: (int)reader["Id"],
+                        login: reader["Login"] as string,
+                        password: reader["PasswordHash"] as string);
+                }
+
+                return null;
             }
         }
 
@@ -106,40 +130,17 @@ namespace Epam.Blog.SqlDAL
             byte[] buffer2;
             if (password == null)
             {
-               throw new ArgumentNullException("password");
+                throw new ArgumentNullException("password");
             }
             using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
             {
                 salt = bytes.Salt;
                 buffer2 = bytes.GetBytes(0x20);
             }
-                byte[] dst = new byte[0x31];
-                    Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
-                    Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
-                    return Convert.ToBase64String(dst);
-        }
-
-        public bool CheckHash(string password, string userLogin)
-        {
-            var user = GetUserByName(userLogin.ToString());
-            return Hash(password) == user.PasswordHash;
-
-            /*using (var _connection = new SqlConnection(_connectionString))
-            {
-                var query = "SELECT PasswordHash FROM dbo.Users " + $"WHERE Id={userId}";
-
-                var command = new SqlCommand(query, _connection);
-
-                _connection.Open();
-
-                var reader = command.ExecuteReader();
-                //var test = reader["PasswordHash"];
-                if (reader.Read())
-                {
-                    result = hash == reader["PasswordHash"].ToString();
-                }
-            }*/
-            //return result;
+            byte[] dst = new byte[0x31];
+            Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
+            Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
+            return Convert.ToBase64String(dst);
         }
 
         public bool VerifyHashedPassword(string hashedPassword, string password)
@@ -166,7 +167,7 @@ namespace Epam.Blog.SqlDAL
             {
                 buffer4 = bytes.GetBytes(0x20);
             }
-            for(int i =0; i<buffer3.Length; i++)
+            for (int i = 0; i < buffer3.Length; i++)
             {
                 if (buffer3[i] != buffer4[i])
                 {
@@ -176,34 +177,16 @@ namespace Epam.Blog.SqlDAL
             return true;
         }
 
-        public User GetUserByName(string login)
-        {
-            using (var _connection = new SqlConnection(_connectionString))
-            {
-                var query = "SELECT * FROM Users " + $"WHERE Login='{login}'";
-                var command = new SqlCommand(query, _connection);
-   
-                command.Parameters.AddWithValue("@Login", login);
-
-                _connection.Open();
-
-                var reader = command.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    return new User(
-                        id: (int)reader["Id"],
-                        login: reader["Login"] as string,
-                        password: reader["PasswordHash"] as string);
-                }
-
-                throw new InvalidOperationException("Cannot find User with Login = " + login);
-            }
-        }
-
         public bool SignIn(string login, string password)
         {
-           return new SignInManager().SignIn(login,password);
+            User user = GetUserByName(login);
+
+            bool check = false;
+            if (user != null)
+            {
+                check = VerifyHashedPassword(user.PasswordHash, password);
+            }
+            return check;
         }
 
     }

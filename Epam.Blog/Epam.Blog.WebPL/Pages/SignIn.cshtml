@@ -2,71 +2,68 @@
 @using Epam.Blog.Dependencies;
 @using Epam.Blog.Entities;
 
-@{
-    Layout = "~/Pages/Layout/_BasicLayout.cshtml";
+@{ Layout = "~/Pages/Layout/_BasicLayout.cshtml";
 
     var bll = DependencyResolver.GetInstance().UserLogic;
 
     if (IsPost)
     {
-        var check = bll.SignIn(Request["login"], Request["pass"]);
+        bool check = bll.SignIn(Request["login"], Request["pass"]);
 
         if (check)
         {
             FormsAuthentication.SetAuthCookie(Request["login"], createPersistentCookie: true);
             Response.Redirect("~/index.cshtml");
         }
-    }
-    else
-    {
-        FormsAuthentication.SignOut();
-    }
+        else
+        {
+<div class="alert alert-warning" role="alert" align="center">
+    There is no user with this login and password.
+</div> }
 }
-<h2 align="center"> Авторизуйтесь</h2>
+else
+{
+FormsAuthentication.SignOut();
+} }
+
 <br />
 <style>
-    .center {
-        margin: 0 auto;
-        margin-top: 15px;
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
     }
 
     .form-control {
         width: 300px;
         text-align: center;
     }
+
+    label {
+        margin: 5px 0 5px 0;
+    }
+
+    p {
+        margin: 10px 0 10px 0;
+    }
 </style>
 
+<h3>Sign in to Personal Blog</h3>
 <form method="post">
     <div class="form-group" align="center">
-        <asp:Panel ID="MainPanel" runat="server" Width="440px" CssClass="center">
+        <asp:Panel ID="MainPanel" runat="server">
             <label for="exampleInputEmail1">Login</label>
             <input name="login" type="text" class="form-control" id="login" placeholder="Enter login">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your login with anyone else.</small>
 
             <div class="form-group">
                 <label for="exampleInputPassword1">Password</label>
                 <input name="pass" type="password" class="form-control" id="password" placeholder="Password">
             </div>
             <br />
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a href="~/Pages/Registration.cshtml" class="btn btn-primary">Registration</a>
+            <button type="submit" class="btn btn-warning">Sign In</button>
+            <p>New here?</p>
+            <a href="~/Pages/Registration.cshtml" class="btn btn-warning">Create blog</a>
         </asp:Panel>
     </div>
 </form>
+
 <script src="js/scripts.js"></script>
-<script type="text/javascript">
-    function TestLogin(login) {
-
-        if (/^[a-zA-Z1-9]+$/.test(login) === false) { alert('В логине должны быть только латинские буквы'); return false; }
-        if (login.length < 4 || login.length > 20) { alert('В логине должен быть от 4 до 20 символов'); return false; }
-        if (parseInt(login.substr(0, 1))) { alert('Логин должен начинаться с буквы'); return false; }
-
-        return true;
-    }
-
-    function TestPassword(pass) {
-        if (pass.length < 5) {
-            alert('В пароле должно быть от 5 символов'); return false;
-        }
-    }
-</script>

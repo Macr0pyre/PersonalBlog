@@ -13,7 +13,6 @@ namespace Epam.Blog.Entities
             Id = id;
             Login = login;
             PasswordHash = password;
-            NormalizedLogin = Login.ToUpper();
         }
 
         public int Id { get; set; }
@@ -21,8 +20,6 @@ namespace Epam.Blog.Entities
         public string Login { get; set; }
 
         public string PasswordHash { get; set; }
-
-        public string NormalizedLogin { get; set; }
 
     }
 }
